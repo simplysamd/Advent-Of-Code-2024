@@ -1012,8 +1012,6 @@ const data = [
   [79209, 60704],
   [39667, 36867]
 ]
-const leftList = []
-const rightList = []
 
 /**
  * Insert number into array in sorted order
@@ -1052,6 +1050,8 @@ function arrInsertNumWithSort (value, list, {maxLength, uniques}) {
 }
 
 function doChallenge () {
+  const leftList = []
+  const rightList = []
   let total = 0
 
   for (const [left, right] of data) {
@@ -1066,8 +1066,13 @@ function doChallenge () {
     total += dist
   }
 
-  // Answer:
-  console.log('Answer: ', total)
+  // 1-1 Answer:
+  // console.log('Answer: ', total)
+
+  return {leftList, rightList, total}
 }
 
-doChallenge()
+// Run 1-1
+// doChallenge()
+
+module.exports = doChallenge
