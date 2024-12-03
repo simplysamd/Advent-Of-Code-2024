@@ -29,4 +29,6 @@ function doChallenge () {
 }
 
 // Run 3-1
-doChallenge()
+// doChallenge()
+
+module.exports = data
