@@ -1,6 +1,11 @@
 /*
+--ATTEMPT 1--
 * Attempting to effectively remove the parts of the string that exist after a `don't()` and before a `do()` so we can
 run the function from the 3-1 question on the trimmed data
+--ATTEMPT 2--
+* Having trouble effectively visualizing the code in my `addEnabled` function so we're pivoting to a simpler system:
+split the string on all instances of the `don't()` string and then look in each string for the first instance of the
+`do()` flag and append any subsequent data
  */
 
 const startData = require('./3-1')
@@ -26,7 +31,25 @@ function addEnabled (data, current) {
 
 function doChallenge () {
   let total = 0
-  const enabled = addEnabled(startData, '')
+  let enabled = ''
+
+  let dontsSplit = startData.split("don't()")
+
+  for (const each of dontsSplit) {
+    // By default the first section is always considered "enabled"
+    if (!enabled) {
+      enabled += each
+      continue
+    }
+
+    const startEn = each.indexOf('do()')
+
+    if (startEn > -1) enabled += each.slice(startEn)
+  }
+
+  // console.log('enabled', enabled.length) // 9802
+                                            // 5845
+
 
   // Copied this block from the 3-1 challenge
   const potential = enabled.split('mul(')
@@ -46,7 +69,8 @@ function doChallenge () {
     }
   }
 
-  // 3-2 Answer: 95128599
+  // 95128599 was too high
+  // 3-2 Answer: 56275602
   console.log(total)
 }
 
