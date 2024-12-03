@@ -1044,8 +1044,10 @@ function doChallenge () {
   }
 
   // 2-1 Answer:
-  console.log('Answer: ', total)
+  // console.log('Answer: ', total)
 }
 
 // Run 2-1
-doChallenge()
+// doChallenge()
+
+module.exports = data
