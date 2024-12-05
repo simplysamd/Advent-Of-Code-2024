@@ -200,8 +200,10 @@ function doChallenge () {
   }
 
   // 4-1 Answer: 2569
-  console.log(total)
+  // console.log(total)
 }
 
 // Run 4-1
-doChallenge()
+// doChallenge()
+
+module.exports = {data, sample}
