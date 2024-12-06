@@ -1418,12 +1418,10 @@ const sample = {
 
 const data = startData
 
-function doChallenge () {
-  let total = 0
-
+function formatData (rules) {
   let formatted = {}
 
-  for (const [a, b] of data.rules) {
+  for (const [a, b] of rules) {
     if (!formatted[a]) formatted[a] = {bef: new Set(), aft: new Set()}
     if (!formatted[b]) formatted[b] = {bef: new Set(), aft: new Set()}
 
@@ -1436,25 +1434,51 @@ function doChallenge () {
     formatted[pg].aft = Array.from(formatted[pg].aft)
   }
 
-  updateloop: for (const update of data.updates) {
+  return formatted
+}
+
+function calculateValidUpdateMedians (rules, updates) {
+  let total = 0
+  const tracked = {valid: [], invalid: []}
+
+  updateloop: for (const update of updates) {
     for (let i = 0; i < update.length; i++) {
       const pg = update[i]
       let start = i
       let end = update.length
       while (start < end) {
-        if (formatted[pg].aft.includes(update[start])) {
+        if (rules[pg].aft.includes(update[start])) {
+          tracked.invalid.push(update)
           continue updateloop
         }
         start++
       }
     }
 
+    tracked.valid.push(update)
     total += update[Math.floor(update.length / 2)]
   }
 
+  return [total, tracked]
+}
+
+function doChallenge () {
+  const formatted = formatData(data.rules)
+  const [total] = calculateValidUpdateMedians(formatted, data.updates)
+  // let total = 0
+  // let formatted = {}
+
+
   // 5-1 Answer: 4662
-  console.log(total)
+  // console.log(total)
 }
 
 // Run 5-1
-doChallenge()
+// doChallenge()
+
+module.exports = {
+  startData,
+  sample,
+  formatData,
+  calculateValidUpdateMedians,
+}
