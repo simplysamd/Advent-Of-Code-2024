@@ -155,7 +155,7 @@ const sampleData = [
 
 const data = startData
 
-function explore(start, data) {
+function explore(start, data, extraConditions) {
   const tilesExplored = new Set([start[0] + '-' + start[1]])
   let onGrid = true
   let col = start[0]
@@ -164,11 +164,20 @@ function explore(start, data) {
   let colMoveIndex = 0
   let rowMoveIndex = 1
 
-  while (onGrid) {
+  gridloop: while (onGrid) {
     // Check what the next tile is
     const nextCol = col + moveOpts[colMoveIndex]
     const nextRow = row + moveOpts[rowMoveIndex]
     const nextTile = data[nextCol]?.[nextRow]
+
+    // Allow extra conditions to be passed that can cause the `while` loop to exit early
+    if (extraConditions && extraConditions.length) {
+      for (const condition of extraConditions) {
+        if (condition(col, row, nextCol, nextRow, data)) {
+          break gridloop
+        }
+      }
+    }
 
     // If no next tile, we are off grid and end the loop
     if (nextTile === undefined) {
@@ -206,8 +215,10 @@ function doChallenge () {
   const total = explore(start, data)
 
   // 6-1 Answer: 4663
-  console.log(total.size)
+  // console.log(total.size)
 }
 
 // Run 6-1
-doChallenge()
+// doChallenge()
+
+module.exports = {startData, sampleData, explore}
