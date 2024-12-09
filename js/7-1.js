@@ -947,8 +947,10 @@ function doChallenge () {
   }
 
   // 7-1 Answer: 882304362421
-  console.log('Answer: ', total)
+  // console.log('Answer: ', total)
 }
 
 // Run 7-1
-doChallenge()
+// doChallenge()
+
+module.exports = {permute2d, startData, sampleData}
