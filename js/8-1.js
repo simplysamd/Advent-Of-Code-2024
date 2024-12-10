@@ -6,6 +6,11 @@ that character
 nodes it creates with every other location of that type and then removing it from the array and repeating the process
 the next location
 * At the end we turn them into unique strings and throw them in a Set to make sure there's no dupes
+--ATTEMPT 2--
+* 497 was too high. Checked the output and saw some negative location indexes which shouldn't be possible
+* I was not doing the bounds check correctly so some out of bounds locations were being pushed to the location array.
+This appears to be an edge case as it was not picked up when I tested with the sample data
+* My range check was even worse than I thought
  */
 
 const fs = require('fs')
@@ -22,8 +27,12 @@ function findAntinodes (locations, ranges) {
     const bloc = [location[0] + (diff[0] * -1), location[1] + (diff[1] * -1)]
 
     // Do not push any locations that are outside the bounds
-    if (aloc[0] >= ranges.v[0] && aloc[1] <= ranges.v[1]) antinodes.push(aloc)
-    if (bloc[0] >= ranges.h[0] && bloc[1] <= ranges.h[1]) antinodes.push(bloc)
+    if (aloc[0] >= ranges.v[0] && aloc[0] <= ranges.v[1] && aloc[1] >= ranges.h[0] && aloc[1] <= ranges.h[1]) {
+      antinodes.push(aloc)
+    }
+    if (bloc[0] >= ranges.v[0] && bloc[0] <= ranges.v[1] && bloc[1] >= ranges.h[0] && bloc[1] <= ranges.h[1]) {
+      antinodes.push(bloc)
+    }
   }
 
   // After finding all the relationships between the current location and others
@@ -36,6 +45,7 @@ function findAntinodes (locations, ranges) {
 function doChallenge () {
   const uniqueAntinodes = new Set()
   const dataFile = fs.readFileSync('../data/data_aoc_8.txt', 'utf8')
+  // const dataFile = fs.readFileSync('../data/sample_aoc_8.txt', 'utf8')
   const data = dataFile.replaceAll('\r', '').split('\n')
   const ranges = {v: [0, data.length - 1], h: [0, data[0].length - 1]}
   const map = {}
@@ -57,9 +67,6 @@ function doChallenge () {
     }
   }
 
-  // const antinodes = findAntinodes(map['0'], ranges)
-  // console.log('nodes', antinodes)
-
   for (const character in map) {
     const antinodes = findAntinodes(map[character], ranges)
     for (const each of antinodes) {
@@ -67,7 +74,8 @@ function doChallenge () {
     }
   }
 
-  // 8-1 Answer: 497
+  // 497 was too high
+  // 8-1 Answer: 394
   console.log(uniqueAntinodes.size)
 }
 
