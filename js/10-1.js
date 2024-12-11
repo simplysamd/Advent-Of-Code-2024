@@ -11,6 +11,13 @@ const dataRaw = fs.readFileSync('../data/data_aoc_10.txt', 'utf8')
 
 const data = dataRaw.replaceAll('\r', '').split('\n')
 
+/**
+ * Check all possible branches in cardinal directions recursively
+ * @param {number} i - row index for start location
+ * @param {number} j - col index for start location
+ * @param {string[]} data - array of strings forming the grid
+ * @returns {Object<string,number>} - key == "rowIndex-colIndex", value == count of distinct paths that terminate at those coordinates
+ */
 function checkBranch ([i, j], data) {
   const directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]
   const here = Number(data[i][j])
@@ -24,11 +31,15 @@ function checkBranch ([i, j], data) {
 
     // If not invalid and is a 9, it's a complete trail
     if (next === 9) {
-      terminationLocations[(i + each[0]) + '-' + (j + each[1])] = true
+      const key = (i + each[0]) + '-' + (j + each[1])
+      terminationLocations[key] = (terminationLocations[key] ?? 0) + 1
       continue
     }
 
-    terminationLocations = {...terminationLocations, ...checkBranch([i + each[0], j + each[1]], data)}
+    const branches = checkBranch([i + each[0], j + each[1]], data)
+    for (const loc in branches) {
+      terminationLocations[loc] = (terminationLocations[loc] ?? 0) + branches[loc]
+    }
   }
 
   return terminationLocations
@@ -55,4 +66,6 @@ function doChallenge () {
 }
 
 // Run 10-1
-doChallenge()
+// doChallenge()
+
+module.exports = {checkBranch}
