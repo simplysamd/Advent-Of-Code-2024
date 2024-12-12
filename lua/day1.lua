@@ -9,8 +9,53 @@ local total = 0
 table.sort(left)
 table.sort(right)
 
+-- 1-1
 for k,v in pairs(left) do
-	total = total + math.abs(v - right[k])	
+	total = total + math.abs(v - right[k])
 end
 
-print("TOTAL: ", total) -- 1830467
+-- print("TOTAL: ", total) -- 1830467
+
+-- 1-2
+for k,v in pairs(left) do
+	local count = 0
+
+	for _,x in pairs(right) do	
+		if v == x then
+			count = count + 1
+		end
+	end
+	total = total + (count * v)
+	
+	print("TOTAL: ", total)
+end
+	
+	
+	
+	
+local x = {
+{1, 2, 3, 4},
+{4, 2, 43, 5}
+}
+-- local isAsc
+
+-- for k,v in pairs(x) do
+	-- local isAsc
+	-- for kk,vv in pairs(v) do
+		-- if isAsc == nil then
+			-- isAsc =	vv < v[kk + 1]
+		-- end
+		
+		-- if isAsc == true and vv > v[kk + 1] then
+			-- print("this is bad")
+			-- goAo continue
+		-- end
+		-- if isAsc == false and vv < v[kk + 1] then
+			-- print("this is bad")
+		-- end
+	-- end
+	-- total = total + 1
+	-- ::continue::
+-- end
+
+-- print(isAsc)
