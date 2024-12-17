@@ -8,6 +8,13 @@ sequence of that information to determine shared fence line
 and the direction the fence is facing
 * After assembling all the fence information, we can check for sequential fences along the same border. Non-sequential
 coordinates indicate a separate fence line
+--ATTEMPT 2--
+* My code passed all 5 examples but did not work for the actual dataset. Not sure where to go from here
+* Using data examples from Reddit to identify additional edge cases
+* Edge case identified - because I was coercing joined strings to numbers, I was ending up with `78, 79, 710` which
+triggered the non-sequential logic and added an additional fence where none existed
+* Solved by keeping the row index and column index separate and comparing them individually instead of trying to combine
+them before comparison
 */
 
 /**
@@ -23,7 +30,7 @@ const rawData = fs.readFileSync('../data/data_aoc_12.txt', 'utf8')
 const data = rawData.replaceAll('\r').split('\n')
 const cardinals = [[-1, 0], [0, 1], [1, 0], [0, -1]]
 
-// for (const each of data) console.log(each)
+for (const each of data) console.log(each)
 
 /**
  *
@@ -84,23 +91,41 @@ function doChallenge () {
           const indices = e.split('-')
           let value
 
+          // The number that stays the same for sequential checks
+          // is reversed for rows vs columns
           if (Number(key) % 2 !== 0) {
-            value = Number(indices.reverse().join(''))
+            value = indices.reverse()
           } else {
-            value = Number(indices.join(''))
+            value = indices
           }
-          tracker[key][v] = value
+          tracker[key][v] = value.map(each => Number(each))
         }
-        tracker[key].sort((a, b) => a - b)
+
+        // Sorting for sequential coordinates
+        tracker[key].sort((a, b) => {
+          if (a[0] > b[0]) return 1
+          if (a[0] < b[0]) return -1
+          if (a[0] === b[0]) {
+            if (a[1] > b[1]) return 1
+            if (a[1] < b[1]) return -1
+            return 0
+          }
+        })
       }
 
       for (const key in tracker) {
         // Our starting point is also the start of a border
         borders++
+        let counter = 1
 
         // Deviations indicate a separate border facing the same direction
         for (let v = 1; v < tracker[key].length; v++) {
-          if (Math.abs(tracker[key][v] - tracker[key][v - 1]) > 1) borders++
+          const cur = {fir: tracker[key][v][0], sec: tracker[key][v][1]}
+          const pre = {fir: tracker[key][v - 1][0], sec: tracker[key][v - 1][1]}
+          if (cur.fir !== pre.fir || Math.abs(cur.sec - pre.sec) > 1) {
+            borders++
+            counter++
+          }
         }
       }
       area += (plots * borders)
@@ -108,7 +133,8 @@ function doChallenge () {
     total += area
   }
 
-  // 12-2 Answer: 909952
+  // 909952 was too high
+  // 12-2 Answer: 901100
   console.log('Answer: ', total)
 }
 
